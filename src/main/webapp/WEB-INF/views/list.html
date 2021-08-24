@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<!--引入 Thymeleaf标签约束-->
+<html lang="zh_CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Spring, SpringMVC, MyBatis Achieve CRUD</title>
+    <!--引入 jQuery-->
+    <script th:src="@{/} + '/js/jQuery3.6.0.mini.js'"></script>
+    <!--引入 list.js-->
+    <script th:src="@{/} + '/js/list.js'"></script>
+    <!--引入 BootStrap-->
+    <script th:src="@{/} + '/js/bootstrap.min.js'"></script>
+    <link rel="stylesheet" th:inline="css" th:href="@{/} + '/css/bootstrap.min.css'" >
+    <!--引入 list.css-->
+    <link rel="stylesheet" th:inline="css" th:href="@{/} + '/css/list.css'">
+</head>
+<body id="list_body">
+<div class="container">
+    <div class="row">
+        <!--用 thymeleaf 获取web的根路径-->
+        <input type="hidden" th:value="@{/}" id="webPath"><br>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Spring, SpringMVC, MyBatis Framework</h2>
+            <h2> Achieve CRUD</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-md-offset-9">
+            <button class="btn btn-primary" data-toggle="modal" data-target="#empAddModel" id="emp_add_btn">新增员工</button>
+            <button class="btn btn-danger" id="delete_select_btn">删除选中</button>
+        </div>
+    </div><br>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-condensed" id="emp_table">
+               <thead>
+                   <tr style="background-color: transparent">
+                       <th><input type="checkbox" class="check_all"></th>
+                       <th>员工 ID</th>
+                       <th>姓名</th>
+                       <th>性别</th>
+                       <th>邮箱</th>
+                       <th>部门</th>
+                       <th>操作</th>
+                   </tr>
+               </thead>
+               <tbody style="background-color: transparent;">
+               </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6" id="page_nav_area">
+        </div>
+        <div class="col-md-6" id="page_info_area">
+
+        </div>
+    </div>
+    <!--员工添加模态框-->
+    <div class="modal fade" id="empAddModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新增员工</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="emp_save_form">
+                        <div class="form-group">
+                            <label for="inputEmpName" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="name" class="form-control" id="inputEmpName" placeholder="请输入姓名" autocomplete="off">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmpEmail" class="col-sm-2 control-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" name="email" class="form-control" id="inputEmpEmail" placeholder="email@qq.com" autocomplete="off">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">性别</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" id="inputEmpGender1" value="M" checked="checked"> 男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" id="inputEmpGender2" value="F"> 女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">部门</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" name="dId" id="dept_select">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="emp_save_btn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--员工修改模态框-->
+    <!--员工添加模态框-->
+    <div class="modal fade" id="empUpdateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">更新员工</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="emp_update_form">
+                        <div class="form-group">
+                            <label for="inputEmpName" class="col-sm-2 control-label">姓名</label>
+                            <div class="col-sm-10">
+                                <p class="form-control-static" id="update_emp_name"></p>
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputEmpEmail" class="col-sm-2 control-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" name="email" class="form-control" id="updateEmpEmail" placeholder="email@qq.com" autocomplete="off">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">性别</label>
+                            <div class="col-sm-10">
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" id="updateEmpGender1" value="M" checked="checked"> 男
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="gender" id="updateEmpGender2" value="F"> 女
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">部门</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" name="dId" id="update_dept_select">
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="emp_update_btn">更新</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <!-- 加载配置文件 -->
+    <properties resource="jdbc.properties"/>
+
+    <!-- 核心配置 -->
+    <context id="default" targetRuntime="MyBatis3">
+
+        <!--去掉自动生成注释-->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!-- JDBC 连接数据库 -->
+        <jdbcConnection driverClass="${jdbc.driverClassName}"
+                        connectionURL="${jdbc.url}"
+                        userId="${jdbc.username}"
+                        password="${jdbc.password}">
+            <!-- connectionURL属性，防止乱码 -->
+            <property name="useUnicode" value="true"/>
+            <!-- connectionURL属性，防止乱码 -->
+            <property name="characterEncoding" value="UTF-8"/>
+            <!-- connectionURL属性，防止报时间错误 -->
+            <property name="serverTimezone" value="UTC"/>
+            <!-- connectionURL属性，防止生成不同数据库同名表的代码 -->
+            <property name="nullCatalogMeansCurrent" value="true"/>
+        </jdbcConnection>
+
+        <!-- Java 类型解释器 -->
+        <javaTypeResolver >
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成 pojo 模型实例 -->
+        <javaModelGenerator targetPackage="com.ssm.pojo" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 生成 mapper 接口实例 -->
+        <sqlMapGenerator targetPackage="com.ssm.mapper"  targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!-- 生成 mapper的XML配置文件-->
+        <!-- XMLMAPPER(纯XML)  ANNOTATEDMAPPER(纯注解实现) MIXEDMAPPER(简注解复XML) 后两者需导(mybatis-dynamic-sql) -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ssm.mapper"  targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!-- 指定表并生成实例类 -->
+        <table tableName="employee" domainObjectName="Employee"/>
+
+        <table tableName="emp_dept" domainObjectName="Department"/>
+
+
+    </context>
+</generatorConfiguration>

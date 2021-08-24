@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+    
+    <!--扫包下带 Controller 注释的类-->
+    <context:component-scan base-package="com.ssm.controller">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 添加注释驱动，提供 Controller 请求转发，json 自动转换等功能-->
+    <mvc:annotation-driven />
+
+    <!--开放静态资源-->
+    <mvc:default-servlet-handler />
+
+    <mvc:resources mapping="/js/**" location="/WEB-INF/js/" />
+
+    <mvc:resources mapping="/css/**" location="/WEB-INF/css/" />
+
+    <mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/" />
+
+    <mvc:resources mapping="/images/**" location="/WEB-INF/images/" />
+
+
+    <!--&lt;!&ndash;内部视图解析器&ndash;&gt;-->
+    <!--<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" >-->
+    <!--    <property name="prefix" value="/WEB-INF/views/"/>-->
+    <!--    <property name="suffix" value=".html"></property>-->
+    <!--</bean>-->
+
+    <!--Thymeleaf 模板解释器-->
+    <bean class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver" id="templateResolver">
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".html"/>
+        <property name="characterEncoding" value="UTF-8"/>
+        <property name="templateMode" value="HTML5"/>
+        <property name="cacheable" value="false"/>
+    </bean>
+    <!--Thymeleaf 模板引擎-->
+    <bean class="org.thymeleaf.spring5.SpringTemplateEngine" id="templateEngine" >
+        <property name="templateResolver" ref="templateResolver"/>
+    </bean>
+    <!--Thymeleaf 视图解释器-->
+    <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
+        <property name="templateEngine" ref="templateEngine"/>
+        <property name="characterEncoding" value="UTF-8"/>
+    </bean>
+
+</beans>
